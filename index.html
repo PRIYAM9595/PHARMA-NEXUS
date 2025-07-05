@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHARMA-NEXUS - Welcome</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to top, #011b27 0%, #014358 50%, #00638e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 900px;
+            padding: 40px;
+        }
+
+        .title {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            letter-spacing: 0.2em;
+            height: 5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .title.float{
+            animation: float 1s ease forwards;
+        }
+
+        .letter {
+            opacity: 0;
+            transform: translateY(50px) rotateX(90deg);
+            display: inline-block;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin: 0 2px;
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .letter.animate {
+            opacity: 1;
+            transform: translateY(0) rotateX(0deg);
+        }
+
+        .letter.special {
+            color: #ffffff;
+            font-size: 1.1em;
+        }
+
+        .description {
+            font-size: 1.2rem;
+            color: #E0F6FF;
+            line-height: 1.6;
+            margin-bottom: 3rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .description.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .description-text {
+            background: rgba(255, 255, 255, 0.126);
+            padding: 50px;
+            border-radius: 15px;
+            border: 2px solid #ffffff;
+            backdrop-filter: blur(10px);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .buttons.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            min-width: 150px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-signup {
+            background: linear-gradient(45deg, #4682B4, #87CEEB);
+            color: #08171e;
+            box-shadow: 0 8px 20px rgba(70, 130, 180, 0.3);
+        }
+
+        .btn-signup:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(70, 130, 180, 0.4);
+            background: linear-gradient(45deg, #5A9BD4, #9FD6EF);
+        }
+
+        .btn-signin {
+            background: linear-gradient(45deg, #2F4F4F, #708090);
+            color: #E0F6FF;
+            box-shadow: 0 8px 20px rgba(47, 79, 79, 0.3);
+        }
+
+        .btn-signin:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(47, 79, 79, 0.4);
+            background: linear-gradient(45deg, #3F5F5F, #8090A0);
+        }
+
+        .click-instruction {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ADD8E6;
+            font-size: 1rem;
+            animation: pulse 2s infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 0.4; }
+        }
+
+        
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+                visibility: visible;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .description {
+                font-size: 1rem;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles"></div>
+    
+    <div class="container">
+        <div class="title" id="title"></div>
+        
+        <div class="description" id="description">
+            <div class="description-text">
+                <strong>An AI-Powered website for Intelligent Medical Stock Monitoring</strong><br>
+                
+                <p>
+                Welcome to PHARMA - NEXUS – your smart medical inventory assistant.
+                Monitor, forecast, and manage medicine stock levels in real-time using the power of AI and data analytics.
+                Ensure uninterrupted care with optimized inventory and zero wastage.</p>
+            </div>
+        </div>
+        
+        <div class="buttons" id="buttons">
+            <button class="btn btn-signup" onclick="handleSignUp()">Sign Up</button>
+            <button class="btn btn-signin" onclick="handleSignIn()">Sign In</button>
+        </div>
+    </div>
+    
+    
+    
+
+    <script>
+        const titleText = "PHARMA-NEXUS";
+        const titleElement = document.getElementById('title');
+        const descriptionElement = document.getElementById('description');
+        const buttonsElement = document.getElementById('buttons');
+        const clickInstruction = document.getElementById('clickInstruction');
+        
+        let animationStarted = false;
+        let currentLetterIndex = 0;
+
+        
+
+        // Initialize title letters
+        function initializeTitle() {
+            titleElement.innerHTML = '';
+            for (let i = 0; i < titleText.length; i++) {
+                const span = document.createElement('span');
+                span.className = 'letter';
+                span.textContent = titleText[i];
+                
+                // Special styling for hyphen
+                if (titleText[i] === '-') {
+                    span.classList.add('special');
+                }
+                
+                titleElement.appendChild(span);
+            }
+        }
+
+        // Animate letters one by one
+        function animateNextLetter() {
+            if (currentLetterIndex < titleText.length) {
+                const letters = document.querySelectorAll('.letter');
+                letters[currentLetterIndex].classList.add('animate');
+                currentLetterIndex++;
+                
+                setTimeout(() => {
+                    animateNextLetter();
+                }, 150);
+            } else {
+                // All letters animated, show description
+                setTimeout(() => {
+                    descriptionElement.classList.add('animate');
+                }, 500);
+                
+                // Show buttons after description
+                setTimeout(() => {
+                    buttonsElement.classList.add('animate');
+                    clickInstruction.style.display = 'none';
+                }, 1000);
+            }
+        }
+
+        // Handle click to start animation
+        function startAnimation() {
+            if (!animationStarted) {
+                animationStarted = true;
+                animateNextLetter();
+            }
+        }
+
+        // Button handlers
+        function handleSignUp() {
+            
+            window.location.href = "Signup.html";
+        }
+
+        function handleSignIn() {
+            
+            window.location.href = "login.html";
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            initializeTitle();
+            setTimeout(() => {
+            startAnimation();
+            }, 100); // delay to prevent initial render flash
+            });
+    </script>
+</body>
+</html>
