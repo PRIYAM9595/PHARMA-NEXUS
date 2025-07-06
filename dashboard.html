@@ -56,8 +56,14 @@
             <i class="fas fa-bell"></i>
             <span class="badge">3</span>
           </div>
-          <div class="user-menu">
+          <div class="user-menu" onclick="toggleUserMenu()">
             <img src="https://via.placeholder.com/40" alt="User">
+            <div class="user-dropdown" id="userDropdown">
+              <div class="dropdown-item" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+              </div>
+            </div>
           </div>
         </div>
       </header>
@@ -100,5 +106,45 @@
   
   <!-- Custom JavaScript -->
   <script src="dashboard.js"></script>
+  
+  <!-- Authentication Check -->
+  <script>
+    // Simple authentication check
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if user is logged in (you can enhance this with proper session management)
+      const isLoggedIn = sessionStorage.getItem('isLoggedIn') || localStorage.getItem('isLoggedIn');
+      
+      if (!isLoggedIn) {
+        // Redirect to login page if not authenticated
+        window.location.href = 'login.html';
+      }
+    });
+
+    // Toggle user dropdown menu
+    function toggleUserMenu() {
+      const dropdown = document.getElementById('userDropdown');
+      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // Logout function
+    function logout() {
+      // Clear authentication flags
+      sessionStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('isLoggedIn');
+      
+      // Redirect to login page
+      window.location.href = 'login.html';
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+      const userMenu = document.querySelector('.user-menu');
+      const dropdown = document.getElementById('userDropdown');
+      
+      if (!userMenu.contains(event.target)) {
+        dropdown.style.display = 'none';
+      }
+    });
+  </script>
 </body>
 </html>

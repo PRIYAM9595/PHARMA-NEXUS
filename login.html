@@ -264,6 +264,8 @@
             border-left: 4px solid #28a745;
             display: none;
             animation: slideIn 0.5s ease-out;
+            text-align: center;
+            font-weight: 500;
         }
 
         @keyframes slideIn {
@@ -544,11 +546,23 @@
                         rememberMe: rememberMe
                     });
                     
-                    // Simulate redirect after successful login
+                    // Redirect to dashboard after successful login
                     setTimeout(() => {
-                        alert('Login successful! Redirecting to dashboard...');
-                        // In a real application, you would redirect to the dashboard
-                        // window.location.href = '/dashboard';
+                        // Set authentication flag
+                        sessionStorage.setItem('isLoggedIn', 'true');
+                        if (rememberMe) {
+                            localStorage.setItem('isLoggedIn', 'true');
+                        }
+                        
+                        // Show success message briefly, then redirect
+                        const successMessage = document.getElementById('successMessage');
+                        successMessage.style.display = 'block';
+                        successMessage.textContent = 'Login successful! Redirecting to dashboard...';
+                        
+                        // Redirect to dashboard after 1.5 seconds
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 1500);
                     }, 2000);
                     
                 }, 2000);

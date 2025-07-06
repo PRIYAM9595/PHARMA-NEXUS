@@ -168,9 +168,47 @@
     justify-content: center;
   }
   
+  .user-menu {
+    position: relative;
+    cursor: pointer;
+  }
+  
   .user-menu img {
     border-radius: 50%;
     cursor: pointer;
+  }
+  
+  .user-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #fff;
+    border-radius: 0.35rem;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    min-width: 150px;
+    display: none;
+    z-index: 1000;
+    margin-top: 0.5rem;
+  }
+  
+  .dropdown-item {
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    color: var(--secondary);
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  
+  .dropdown-item:hover {
+    background-color: rgba(78, 115, 223, 0.1);
+    color: var(--primary);
+  }
+  
+  .dropdown-item i {
+    margin-right: 0.5rem;
+    width: 1rem;
+    text-align: center;
   }
   
   /* Content Section Styles */
