@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHARMA-NEXUS Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <div class="logo">
+                <i class="fas fa-pills"></i>
+                <span>PHARMA-NEXUS</span>
+            </div>
+            
+            <nav>
+                <ul>
+                    <li class="active" data-section="dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </li>
+                    <li data-section="inventory">
+                        <i class="fas fa-boxes"></i>
+                        <span>Inventory</span>
+                    </li>
+                    <li data-section="monitoring">
+                        <i class="fas fa-thermometer-half"></i>
+                        <span>Monitoring</span>
+                    </li>
+                    <li data-section="forecasting">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Forecasting</span>
+                    </li>
+                    <li data-section="alerts">
+                        <i class="fas fa-bell"></i>
+                        <span>Alerts</span>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="user-profile">
+                <img src="https://ui-avatars.com/api/?name=Demo+User&background=00638e&color=fff" alt="User">
+                <div class="user-info">
+                    <span class="username">Demo User</span>
+                    <span class="role">Pharmacy Manager</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <header>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="globalSearch" placeholder="Search medicines, batches...">
+                </div>
+                <div class="header-actions">
+                    <div class="notification" id="notificationBell">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge" id="alertCount">0</span>
+                    </div>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="content-section active" id="dashboard">
+                <h1><i class="fas fa-tachometer-alt"></i> Dashboard Overview</h1>
+                
+                <!-- Stats Cards -->
+                <div class="stats-grid" id="statsGrid">
+                    <!-- Dynamically loaded -->
+                </div>
+                
+                <!-- Charts Row -->
+                <div class="charts-row">
+                    <div class="chart-container">
+                        <h2><i class="fas fa-chart-line"></i> Medicine Consumption</h2>
+                        <canvas id="consumptionChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h2><i class="fas fa-chart-bar"></i> Stock Level Forecast</h2>
+                        <canvas id="forecastChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Recent Alerts -->
+                <div class="alerts-container">
+                    <div class="section-header">
+                        <h2><i class="fas fa-bell"></i> Recent Alerts</h2>
+                        <button class="btn btn-primary" onclick="showSection('alerts')">
+                            View All Alerts
+                        </button>
+                    </div>
+                    <div class="alert-list" id="recentAlerts">
+                        <!-- Dynamically loaded -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Inventory Management -->
+            <div class="content-section" id="inventory">
+                <div class="section-header">
+                    <h1><i class="fas fa-boxes"></i> Medicine Inventory</h1>
+                    <div>
+                        <button class="btn btn-primary" onclick="showAddMedicineModal()">
+                            <i class="fas fa-plus"></i> Add Medicine
+                        </button>
+                        <button class="btn btn-secondary" onclick="exportInventory()">
+                            <i class="fas fa-file-export"></i> Export
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-controls">
+                    <div class="form-group">
+                        <label for="inventoryFilter"><i class="fas fa-filter"></i> Filter By:</label>
+                        <select id="inventoryFilter" onchange="filterInventory()">
+                            <option value="all">All Medicines</option>
+                            <option value="low">Low Stock</option>
+                            <option value="expiring">Expiring Soon</option>
+                            <option value="category">By Category</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="inventorySearch" placeholder="Search inventory..." onkeyup="searchInventory()">
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table id="inventoryTable">
+                        <thead>
+                            <tr>
+                                <th onclick="sortInventory('name')">Medicine Name <i class="fas fa-sort"></i></th>
+                                <th onclick="sortInventory('batch')">Batch No.</th>
+                                <th onclick="sortInventory('category')">Category</th>
+                                <th onclick="sortInventory('stock')">Current Stock</th>
+                                <th>Threshold</th>
+                                <th onclick="sortInventory('expiry')">Expiry Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryBody">
+                            <!-- Dynamically loaded -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="pagination">
+                    <button id="prevPage" onclick="changePage(-1)"><i class="fas fa-chevron-left"></i></button>
+                    <span id="pageInfo">Page 1 of 1</span>
+                    <button id="nextPage" onclick="changePage(1)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+            
+            <!-- Storage Monitoring -->
+            <div class="content-section" id="monitoring">
+                <div class="section-header">
+                    <h1><i class="fas fa-thermometer-half"></i> Storage Monitoring</h1>
+                    <button class="btn btn-primary" onclick="refreshSensorData()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+                
+                <div class="sensor-grid">
+                    <div class="sensor-card">
+                        <div class="sensor-header">
+                            <i class="fas fa-thermometer-three-quarters"></i>
+                            <h2>Temperature</h2>
+                            <span class="sensor-location">Main Storage Room</span>
+                        </div>
+                        <div class="sensor-value" id="tempValue">
+                            24.5°C
+                        </div>
+                        <div class="sensor-status normal">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Normal</span>
+                        </div>
+                        <div class="sensor-history">
+                            <canvas id="tempChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="sensor-card">
+                        <div class="sensor-header">
+                            <i class="fas fa-tint"></i>
+                            <h2>Humidity</h2>
+                            <span class="sensor-location">Main Storage Room</span>
+                        </div>
+                        <div class="sensor-value" id="humidityValue">
+                            45%
+                        </div>
+                        <div class="sensor-status normal">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Normal</span>
+                        </div>
+                        <div class="sensor-history">
+                            <canvas id="humidityChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="sensor-card">
+                        <div class="sensor-header">
+                            <i class="fas fa-lightbulb"></i>
+                            <h2>Light Exposure</h2>
+                            <span class="sensor-location">Shelf A-12</span>
+                        </div>
+                        <div class="sensor-value" id="lightValue">
+                            120 lux
+                        </div>
+                        <div class="sensor-status warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Warning</span>
+                        </div>
+                        <div class="sensor-history">
+                            <canvas id="lightChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="sensor-card">
+                        <div class="sensor-header">
+                            <i class="fas fa-database"></i>
+                            <h2>Inventory Count</h2>
+                            <span class="sensor-location">RFID System</span>
+                        </div>
+                        <div class="sensor-value" id="inventoryCount">
+                            0
+                        </div>
+                        <div class="sensor-status normal">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Normal</span>
+                        </div>
+                        <div class="sensor-history">
+                            <canvas id="inventoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sensor-alerts">
+                    <h2><i class="fas fa-exclamation-triangle"></i> Storage Alerts</h2>
+                    <div class="alert-list" id="storageAlerts">
+                        <!-- Dynamically loaded -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Forecasting Section -->
+            <div class="content-section" id="forecasting">
+                <div class="section-header">
+                    <h1><i class="fas fa-chart-line"></i> AI Forecasting</h1>
+                    <div>
+                        <button class="btn btn-primary" onclick="generateForecast()">
+                            <i class="fas fa-magic"></i> Generate Forecast
+                        </button>
+                        <button class="btn btn-secondary" onclick="exportForecast()">
+                            <i class="fas fa-file-export"></i> Export
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="forecast-container">
+                    <div class="forecast-chart-container">
+                        <h2><i class="fas fa-chart-bar"></i> 3-Month Demand Forecast</h2>
+                        <canvas id="aiForecastChart"></canvas>
+                    </div>
+                    
+                    <div class="forecast-recommendations">
+                        <h2><i class="fas fa-lightbulb"></i> AI Recommendations</h2>
+                        <div class="recommendation-list" id="aiRecommendations">
+                            <!-- Dynamically loaded -->
+                        </div>
+                        
+                        <div class="forecast-actions">
+                            <button class="btn btn-primary" onclick="createPurchaseOrder()">
+                                <i class="fas fa-file-invoice"></i> Create Purchase Order
+                            </button>
+                            <button class="btn btn-secondary" onclick="adjustInventoryLevels()">
+                                <i class="fas fa-sliders-h"></i> Adjust Inventory Levels
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="forecast-details">
+                    <h2><i class="fas fa-info-circle"></i> Forecast Details</h2>
+                    <div class="forecast-table">
+                        <table id="forecastDataTable">
+                            <thead>
+                                <tr>
+                                    <th>Medicine</th>
+                                    <th>Current Stock</th>
+                                    <th>Monthly Usage</th>
+                                    <th>Projected Shortfall</th>
+                                    <th>Recommended Order</th>
+                                    <th>Urgency</th>
+                                </tr>
+                            </thead>
+                            <tbody id="forecastDataBody">
+                                <!-- Dynamically loaded -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Alerts Section -->
+            <div class="content-section" id="alerts">
+                <div class="section-header">
+                    <h1><i class="fas fa-bell"></i> Alert Management</h1>
+                    <div class="alert-filters">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="critical">Critical</button>
+                        <button class="filter-btn" data-filter="warning">Warning</button>
+                        <button class="filter-btn" data-filter="info">Info</button>
+                    </div>
+                </div>
+                
+                <div class="alert-management">
+                    <div class="alert-list-container">
+                        <div class="alert-list-header">
+                            <h3>Active Alerts</h3>
+                            <button class="btn btn-secondary" onclick="markAllAsRead()">
+                                <i class="fas fa-check-double"></i> Mark All as Read
+                            </button>
+                        </div>
+                        <div class="alert-items" id="allAlerts">
+                            <!-- Dynamically loaded -->
+                        </div>
+                    </div>
+                    
+                    <div class="alert-details" id="alertDetails">
+                        <div class="alert-detail-placeholder">
+                            <i class="fas fa-bell-slash"></i>
+                            <p>Select an alert to view details</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Medicine Modal -->
+    <div class="modal" id="addMedicineModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('addMedicineModal')">&times;</span>
+            <h2><i class="fas fa-pills"></i> Add New Medicine</h2>
+            <form id="medicineForm" onsubmit="addMedicine(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="medName">Medicine Name*</label>
+                        <input type="text" id="medName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="medBatch">Batch Number*</label>
+                        <input type="text" id="medBatch" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="medCategory">Category*</label>
+                        <select id="medCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="analgesic">Analgesic</option>
+                            <option value="antibiotic">Antibiotic</option>
+                            <option value="antiviral">Antiviral</option>
+                            <option value="antifungal">Antifungal</option>
+                            <option value="antihistamine">Antihistamine</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="medSupplier">Supplier</label>
+                        <select id="medSupplier">
+                            <option value="">Select Supplier</option>
+                            <option value="MediCorp">MediCorp</option>
+                            <option value="PharmaPlus">PharmaPlus</option>
+                            <option value="Global Pharma">Global Pharma</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="medStock">Current Stock*</label>
+                        <input type="number" id="medStock" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="medThreshold">Reorder Threshold*</label>
+                        <input type="number" id="medThreshold" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="medExpiry">Expiry Date*</label>
+                        <input type="date" id="medExpiry" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="medPrice">Unit Price ($)</label>
+                        <input type="number" step="0.01" id="medPrice">
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Medicine
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addMedicineModal')">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
+    
+    <!-- Main Dashboard JavaScript -->
+    <script src="dashboard.js"></script>
+</body>
+</html>
